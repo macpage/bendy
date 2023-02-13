@@ -1,0 +1,1 @@
+console.log("lesgooo"),document.querySelector("#submit").addEventListener("click",(()=>{document.querySelector("body").innerHTML=""}));
