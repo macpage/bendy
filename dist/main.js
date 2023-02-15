@@ -1,1 +1,1 @@
-console.log("lesgooo"),document.querySelector("#submit").addEventListener("click",(()=>{document.querySelector("body").innerHTML=""}));
+console.log("lesgooo"),document.querySelector("#submit").addEventListener("click",(()=>{!function(){const e=document.querySelector("body");e.innerHTML="";const t=document.createElement("div");t.classList.add("header"),e.append(t);const n=document.createElement("button");n.setAttribute("id","logout_button"),n.innerHTML="logout",t.append(n);const o=document.createElement("div");o.classList.add("background"),e.append(o)}()}));
