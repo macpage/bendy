@@ -9,6 +9,20 @@ function render_main_page() {
   body.innerHTML = '';
 
   // create main page
+  // create logout button with div
+  const header = document.createElement('div');
+  header.classList.add('header');
+  body.append(header);
+
+  const logout_button = document.createElement('button');
+  logout_button.setAttribute('id', 'logout_button');
+  logout_button.innerHTML = 'logout';
+  header.append(logout_button);
+
+  // create background
+  const background = document.createElement('div');
+  background.classList.add('background');
+  body.append(background);
 }
 
 // Controller
