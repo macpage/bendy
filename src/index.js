@@ -1,9 +1,64 @@
-console.log('lesgooo');
+console.log('sldflkksd');
 
 // Model
 let loggedIn = false;
-let hours = 20;
-let default_hours = hours;
+
+function employee(
+  id,
+  first,
+  last,
+  age,
+  emp_type,
+  besides, // is student or something
+  time_available, // how much work time to offer
+  time_to_work,
+  time_worked, // how many hours already worked
+  time_remaining, // how many hours to work til all hours are used
+  job_start,
+  job_end,
+  days_worked,
+  hours_sum,
+  position,
+  overtime
+) {
+  this.id = id;
+  this.first = first;
+  this.last = last;
+  this.age = age;
+  this.emp_type = emp_type;
+  this.besides = besides;
+  this.time_available = time_available;
+  this.time_to_work = time_to_work;
+  this.time_worked = time_worked;
+  this.time_remaining = time_remaining;
+  this.job_start = job_start;
+  this.job_end = job_end;
+  this.days_worked = days_worked;
+  this.hours_sum = hours_sum;
+  this.position = position;
+  this.overtime = overtime;
+}
+
+let emp_arr = [];
+emp_arr[0] = new employee(
+  0,
+  'Mac',
+  'Sophani',
+  23,
+  'Full Time',
+  '',
+  40,
+  0,
+  0,
+  40,
+  '01.08.2023',
+  '--.--.----',
+  0,
+  0,
+  '',
+  0
+);
+console.log(emp_arr[0].first);
 
 // View
 function render_main_page() {
@@ -40,11 +95,11 @@ function render_main_page() {
   employee_list_background.append(employee_searchbar);
 
   // create employee list
-  for (let i = 0; i < 6; i++) {
+  emp_arr.forEach((e) => {
     const employee_box = document.createElement('div');
     employee_box.classList.add('employee_box');
     employee_box.setAttribute('draggable', 'true');
-    employee_box.setAttribute('id', 'employee_id_' + i);
+    employee_box.setAttribute('id', 'employee_id_' + e.id);
     employee_list_background.append(employee_box);
 
     const employee_box_picture = document.createElement('img');
@@ -53,23 +108,23 @@ function render_main_page() {
 
     const employee_box_text = document.createElement('p');
     employee_box_text.classList.add('employee_box_text');
-    employee_box_text.innerHTML = 'Zane Layton';
+    employee_box_text.innerHTML = e.first + ' ' + e.last;
     employee_box.append(employee_box_text);
 
     const employee_box_position = document.createElement('p');
     employee_box_position.classList.add('employee_box_position');
-    employee_box_position.innerHTML = 'Position';
+    employee_box_position.innerHTML = e.position;
     employee_box.append(employee_box_position);
 
     const employee_box_hours = document.createElement('p');
     employee_box_hours.classList.add('employee_box_hours');
-    employee_box_hours.innerHTML = "0/20 hr's";
+    employee_box_hours.innerHTML = e.time_to_work + '/' + e.time_remaining;
     employee_box.append(employee_box_hours);
 
     const employee_box_status = document.createElement('div');
     employee_box_status.classList.add('employee_box_status');
     employee_box.append(employee_box_status);
-  }
+  });
 
   // create nav
   const nav_background = document.createElement('div');
@@ -224,13 +279,20 @@ function drop() {
 
     //set click event
     clone.addEventListener('click', (e) => {
-      set_employee_shift();
+      let id;
+      if (e.target !== e.currentTarget) {
+        id = e.target.parentElement.id.slice(-1);
+      } else {
+        id = e.target.id.slice(-1);
+      }
+
+      set_employee_shift(id);
     });
   });
 }
 
 // Set employee shift
-function set_employee_shift() {
+function set_employee_shift(id) {
   const modal_background = document.createElement('div');
   modal_background.classList.add('modal_background');
   modal_background.style.display = 'flex';
@@ -242,11 +304,11 @@ function set_employee_shift() {
 
   let modal_employee_name = document.createElement('p');
   modal_employee_name.classList.add('modal_employee_name');
-  modal_employee_name.innerHTML = 'Zane Layton';
+  modal_employee_name.innerHTML = emp_arr[id].first + ' ' + emp_arr[id].last;
   modal_overlay.append(modal_employee_name);
 
   let modal_employee_hours_remain = document.createElement('p');
-  modal_employee_hours_remain.innerHTML = hours;
+  modal_employee_hours_remain.innerHTML = emp_arr[id].time_remaining;
   modal_overlay.append(modal_employee_hours_remain);
 
   const modal_role_selection = document.createElement('select');
@@ -265,6 +327,9 @@ function set_employee_shift() {
   modal_hours_text.innerHTML = 'Hours to work: ';
   modal_overlay.append(modal_hours_text);
 
+  let default_hours = emp_arr[id].time_remaining;
+  let hours = 0;
+  let hours_to_work = 0;
   const inputHandler = (e) => {
     hours = default_hours - e.target.value;
     modal_employee_hours_remain.innerHTML = hours;
@@ -273,8 +338,8 @@ function set_employee_shift() {
       hours = default_hours;
     }
     modal_hours_text.innerHTML = 'Hours to work: ' + e.target.value;
+    hours_to_work = e.target.value;
   };
-
   const modal_employee_hour = document.createElement('input');
   modal_employee_hour.classList.add('modal_employee_hour');
   modal_employee_hour.type = 'number';
@@ -292,9 +357,24 @@ function set_employee_shift() {
   modal_overlay.append(modal_cancel_btn);
 
   const modal_confirm_btn = document.createElement('button');
-  modal_confirm_btn.classList.add('modal_cancel_btn');
+  modal_confirm_btn.classList.add('modal_confirm_btn');
   modal_confirm_btn.innerHTML = 'Confirm';
   modal_confirm_btn.addEventListener('click', (e) => {
+    // Update values (Hours, Positions)
+    const emp = document
+      .querySelector('.employee_list_background')
+      .querySelector('#employee_id_' + id);
+    console.log('hours to work: ' + emp_arr[id].time_to_work);
+    emp_arr[id].time_remaining = hours;
+    let x = Number(emp_arr[id].time_to_work);
+    x = x + Number(hours_to_work);
+    emp_arr[id].position = modal_role_selection.value;
+    emp_arr[id].time_to_work = x;
+    emp.querySelector('.employee_box_hours').innerHTML =
+      x + '/' + emp_arr[id].time_available;
+    console.log(emp_arr[id]);
+    console.log('hours to work: ' + emp_arr[id].time_to_work);
+    console.log('hours remaining: ' + emp_arr[id].time_remaining);
     modal_background.remove();
   });
   modal_overlay.append(modal_confirm_btn);
