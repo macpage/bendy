@@ -277,22 +277,26 @@ function drop() {
     clone.setAttribute('draggable', 'false');
     e.dataTransfer.clearData();
 
+    clone.querySelector('.employee_box_hours').innerHTML = 0 + '/' + '40';
     //set click event
     clone.addEventListener('click', (e) => {
       let id;
+      let s; // shift
       if (e.target !== e.currentTarget) {
         id = e.target.parentElement.id.slice(-1);
+        s = e.target.parentElement;
       } else {
         id = e.target.id.slice(-1);
+        s = e.target;
       }
 
-      set_employee_shift(id);
+      set_employee_shift(id, s);
     });
   });
 }
 
 // Set employee shift
-function set_employee_shift(id) {
+function set_employee_shift(id, s) {
   const modal_background = document.createElement('div');
   modal_background.classList.add('modal_background');
   modal_background.style.display = 'flex';
@@ -375,6 +379,9 @@ function set_employee_shift(id) {
     console.log(emp_arr[id]);
     console.log('hours to work: ' + emp_arr[id].time_to_work);
     console.log('hours remaining: ' + emp_arr[id].time_remaining);
+    s.querySelector('.employee_box_hours').innerHTML =
+      Number(hours_to_work) + '/' + '40';
+    console.log('here: ' + s.querySelector('.employee_box_hours').innerHTML);
     modal_background.remove();
   });
   modal_overlay.append(modal_confirm_btn);
